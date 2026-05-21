@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>0–48 Hour Planning | Fasal Indore Ashara 1448H</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div id="login-overlay" class="login-overlay">
+      <div class="login-card">
+        <div class="login-header">
+          <h1>0–48 Hour on Fasal<br />Indore Ashara 1448H</h1>
+          <p>Department planning workbook</p>
+        </div>
+        <form id="login-form" class="login-form">
+          <label>
+            Username
+            <input id="username" name="username" type="text" autocomplete="username" placeholder="admin" />
+          </label>
+          <label>
+            Password
+            <input id="password" name="password" type="password" autocomplete="current-password" placeholder="••••••••" />
+          </label>
+          <p id="login-error" class="login-error" aria-live="polite"></p>
+          <div class="login-actions">
+            <button type="submit" class="btn btn-primary">Admin login (edit all fields)</button>
+            <button type="button" id="viewer-btn" class="btn btn-secondary">Continue as viewer (read-only)</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="app" class="app hidden">
+      <header class="title-bar">
+        <div class="title-bar-brand">
+          <strong>0–48 Hour on Fasal — Indore Ashara 1448H</strong>
+          <span>0 - 48 HOURS PLANNING AFTER FASAL</span>
+        </div>
+        <div class="title-bar-actions">
+          <span id="role-badge" class="badge viewer">View only</span>
+          <button type="button" id="logout-btn" class="btn btn-ghost" style="color:#fff">Sign out</button>
+        </div>
+      </header>
+
+      <div class="ribbon">
+        <div class="ribbon-group">
+          <button type="button" id="save-btn" class="btn btn-primary">Save</button>
+          <button type="button" id="export-btn" class="btn btn-secondary">Export CSV</button>
+          <button type="button" id="add-row-btn" class="btn btn-secondary">Add row</button>
+        </div>
+        <div class="ribbon-group">
+          <button type="button" id="reset-dept-btn" class="btn btn-secondary">Reset sheet</button>
+          <button type="button" id="reset-all-btn" class="btn btn-secondary">Reset all</button>
+        </div>
+        <div class="ribbon-group">
+          <button type="button" id="admin-login-btn" class="btn btn-ghost">Switch user</button>
+        </div>
+        <span id="save-status" class="save-status">Changes save automatically in browser</span>
+      </div>
+
+      <p id="readonly-banner" class="readonly-banner hidden">
+        You are in view-only mode. Use Admin login to edit cells. Default admin: username <strong>admin</strong>, password <strong>ashara1448</strong>.
+      </p>
+
+      <div class="main-layout">
+        <aside class="dept-sidebar">
+          <h2>Departments</h2>
+          <ul id="dept-list" class="dept-list"></ul>
+        </aside>
+
+        <section class="sheet-panel">
+          <div id="sheet-meta" class="sheet-meta"></div>
+          <div class="sheet-scroll">
+            <div class="sheet-table-wrap">
+              <table class="sheet-table" aria-label="Planning spreadsheet">
+                <thead id="sheet-head"></thead>
+                <tbody id="sheet-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <footer class="status-bar">
+        <span>Sheet: <strong id="status-dept">—</strong></span>
+        <span id="status-mode">Read-only</span>
+        <span>Data stored locally in this browser</span>
+      </footer>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
