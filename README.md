@@ -10,6 +10,10 @@ Static web app for post-Fasal implementation tracking (Indore Ashara 1448H).
 | **Department wise** | `department.html` | 24 department planning sheets (existing Excel data) |
 | **Zone wise** | `zone.html` | Zone implementation checklist (22 items) |
 
+## Logo
+
+Place your official logo at `assets/ashara-logo.png` (used on the home page). If missing, the included `assets/ashara-logo.svg` is shown automatically.
+
 ## Quick start
 
 ```bash

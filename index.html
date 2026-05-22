@@ -7,20 +7,30 @@
     <link rel="stylesheet" href="css/landing.css" />
   </head>
   <body class="landing-page">
+    <div class="landing-bg" aria-hidden="true"></div>
     <main class="landing">
-      <div class="landing-card">
-        <p class="landing-eyebrow">Indore · Post Fasal</p>
-        <h1 class="landing-title">Ashara Mubaraka 1448H</h1>
-        <p class="landing-subtitle">Post Fasal 48 Hour Implementation Checklist</p>
-        <p class="landing-desc">
-          Track department tasks and zone-wide implementation requirements in one place.
-        </p>
+      <div class="landing-hero">
+        <img
+          src="assets/ashara-logo.png"
+          alt="Ashara Mubaraka Araz — Indore 1448H"
+          class="landing-logo"
+          width="320"
+          height="256"
+          onerror="this.onerror=null;this.src='assets/ashara-logo.svg';"
+        />
+        <div class="landing-headings">
+          <h1 class="landing-title">Ashara Mubaraka 1448H</h1>
+          <p class="landing-subtitle">Post Fasal 48 Hour Implementation Checklist</p>
+          <p class="landing-tagline">Indore · Cleanest City of India</p>
+        </div>
         <div class="landing-actions">
-          <a href="department.html" class="landing-btn landing-btn--primary">
+          <a href="department.html" class="landing-btn landing-btn--gold">
+            <span class="landing-btn-icon" aria-hidden="true">📋</span>
             <span class="landing-btn-label">Check Department Wise</span>
             <span class="landing-btn-hint">24 department planning sheets</span>
           </a>
-          <a href="zone.html" class="landing-btn landing-btn--secondary">
+          <a href="zone.html" class="landing-btn landing-btn--green">
+            <span class="landing-btn-icon" aria-hidden="true">📍</span>
             <span class="landing-btn-label">Check Zone Wise</span>
             <span class="landing-btn-hint">Zone implementation checklist</span>
           </a>

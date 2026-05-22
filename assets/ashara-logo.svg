@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 320" role="img" aria-label="Ashara Mubaraka Indore 1448H">
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5D547"/>
+      <stop offset="100%" style="stop-color:#C9A227"/>
+    </linearGradient>
+  </defs>
+  <!-- Map silhouette -->
+  <path fill="#4a4a4a" opacity="0.35" d="M80 40c40-30 120-35 180-20 50 12 90 50 100 95 5 28-15 55-45 70-55 28-130 15-175-25C115 145 70 95 80 40z"/>
+  <!-- Masjid -->
+  <g fill="url(#gold)" stroke="#1a1a1a" stroke-width="1.5">
+    <rect x="95" y="130" width="200" height="95" rx="2"/>
+    <path d="M95 130h200l-8-18H103l-8 18z"/>
+    <rect x="115" y="155" width="28" height="45" rx="14" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+    <rect x="155" y="155" width="28" height="45" rx="14" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+    <rect x="195" y="155" width="28" height="45" rx="14" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+    <rect x="235" y="155" width="28" height="45" rx="14" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+    <!-- Minaret -->
+    <rect x="268" y="75" width="32" height="150"/>
+    <rect x="264" y="65" width="40" height="12" rx="2"/>
+    <rect x="260" y="55" width="48" height="10" rx="2"/>
+  </g>
+  <!-- Main flag -->
+  <path fill="#c41e3a" d="M276 42c25-8 45 5 50 25 5 18-5 35-22 42l-8-55z"/>
+  <text x="288" y="72" fill="#fff" font-size="11" font-family="serif" text-anchor="middle">&#xFDFD;</text>
+  <!-- Small flags on roof -->
+  <g font-size="7" font-family="sans-serif" fill="#fff" text-anchor="middle">
+    <rect x="108" y="108" width="22" height="14" fill="#c41e3a" rx="1"/><text x="119" y="118">1440</text>
+    <rect x="138" y="108" width="22" height="14" fill="#c41e3a" rx="1"/><text x="149" y="118">1423</text>
+    <rect x="168" y="108" width="22" height="14" fill="#c41e3a" rx="1"/><text x="179" y="118">1407</text>
+    <rect x="198" y="108" width="22" height="14" fill="#1a7a3a" rx="1"/><text x="209" y="118">1447</text>
+  </g>
+  <!-- Text -->
+  <text x="200" y="258" fill="#1a1a1a" font-size="14" font-weight="700" text-anchor="middle" font-family="Segoe UI,sans-serif">ASHARA MUBARAKA ARAZ</text>
+  <text x="200" y="288" fill="#6b6b6b" font-size="28" font-weight="700" text-anchor="middle" font-family="Segoe UI,sans-serif">INDORE 1448H</text>
+  <line x1="120" y1="298" x2="280" y2="298" stroke="#1a7a3a" stroke-width="3"/>
+  <text x="200" y="312" fill="#1a7a3a" font-size="11" font-weight="600" text-anchor="middle" font-family="Segoe UI,sans-serif">CLEANEST CITY OF INDIA</text>
+</svg>

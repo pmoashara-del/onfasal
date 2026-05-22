@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Zone Wise Checklist | Ashara Mubaraka 1448H</title>
     <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/zone.css" />
   </head>
-  <body>
+  <body class="zone-page">
     <div id="login-overlay" class="login-overlay hidden">
       <div class="login-card">
         <div class="login-header">
@@ -31,11 +32,11 @@
       </div>
     </div>
 
-    <div id="app" class="app">
-      <header class="title-bar">
+    <div id="app" class="app zone-app-shell">
+      <header class="title-bar title-bar--zone">
         <div class="title-bar-brand">
-          <strong>Zone Wise — Ashara Mubaraka 1448H</strong>
-          <span>Post Fasal 48 Hour Implementation Checklist</span>
+          <strong>Zone Wise Checklist</strong>
+          <span>Post Fasal 48 Hour Implementation · Ashara Mubaraka 1448H</span>
         </div>
         <div class="title-bar-actions">
           <a href="index.html" class="btn btn-ghost" style="color:#fff">Home</a>
@@ -44,43 +45,54 @@
         </div>
       </header>
 
-      <div class="ribbon">
-        <div class="ribbon-group admin-only hidden">
+      <div class="zone-toolbar">
+        <div class="zone-toolbar-left admin-only hidden">
           <button type="button" id="save-btn" class="btn btn-primary">Save</button>
-          <button type="button" id="add-row-btn" class="btn btn-secondary">Add row</button>
+          <button type="button" id="add-row-btn" class="btn btn-secondary">Add item</button>
+          <button type="button" id="reset-btn" class="btn btn-secondary">Reset</button>
         </div>
-        <div class="ribbon-group">
+        <div class="zone-toolbar-right">
           <button type="button" id="export-btn" class="btn btn-secondary">Export Excel</button>
+          <button type="button" id="admin-login-btn" class="btn btn-ghost zone-signin">Sign in as admin</button>
+          <span id="save-status" class="save-status"></span>
         </div>
-        <div class="ribbon-group admin-only hidden">
-          <button type="button" id="reset-btn" class="btn btn-secondary">Reset checklist</button>
-        </div>
-        <div class="ribbon-group">
-          <button type="button" id="admin-login-btn" class="btn btn-ghost">Sign in as admin</button>
-        </div>
-        <span id="save-status" class="save-status"></span>
       </div>
 
       <p id="readonly-banner" class="readonly-banner">
-        View-only mode. Click <strong>Sign in as admin</strong> to edit. Click column headers to select a column; use arrow keys to move between cells.
+        View-only mode. <strong>Sign in as admin</strong> to update zone assignments, status, and remarks on each card.
       </p>
 
-      <section class="sheet-panel sheet-panel--full">
-        <div id="sheet-meta" class="sheet-meta"></div>
-        <div id="sheet-scroll" class="sheet-scroll" tabindex="0">
-          <div class="sheet-table-wrap">
-            <table id="sheet-table" class="sheet-table" aria-label="Zone checklist">
-              <thead id="sheet-head"></thead>
-              <tbody id="sheet-body"></tbody>
-            </table>
-          </div>
+      <div class="zone-progress-wrap">
+        <div class="zone-progress-head">
+          <span id="status-count">0 items</span>
+          <span id="progress-text">0% complete</span>
         </div>
-      </section>
+        <div class="zone-progress-bar">
+          <div id="progress-fill" class="zone-progress-fill" style="width: 0%"></div>
+        </div>
+      </div>
 
-      <footer class="status-bar">
-        <span>Zone checklist · <strong id="status-count">—</strong> items</span>
+      <div class="zone-filter-bar">
+        <label class="zone-filter-label">
+          Filter by zone
+          <select id="zone-filter" class="zone-filter-select">
+            <option value="">All zones</option>
+            <option value="ALL ZONES">ALL ZONES</option>
+            <option value="CMZ">CMZ</option>
+            <option value="MASAKIN">MASAKIN</option>
+            <option value="BURHANI">BURHANI</option>
+            <option value="HASANJI">HASANJI</option>
+            <option value="MHOW">MHOW</option>
+            <option value="HAIDRY">HAIDRY</option>
+            <option value="NOORANINAGAR">NOORANINAGAR</option>
+          </select>
+        </label>
+      </div>
+
+      <main id="zone-cards" class="zone-cards" aria-label="Zone checklist items"></main>
+
+      <footer class="status-bar status-bar--zone">
         <span id="status-mode">Read-only</span>
-        <span id="status-cell">Ready</span>
         <span id="status-saved">Data saved in this browser</span>
       </footer>
     </div>
