@@ -20,7 +20,9 @@ The app opens in **viewer mode** by default (read-only). Admins click **Sign in 
 | **Viewer** | Default on open | View all sheets, export Excel |
 | **Admin** | Toolbar → Sign in as admin (`admin` / `ashara1448`) | Edit cells, add rows, save, reset |
 
-Edits are saved to **localStorage** in the browser (per device).
+Admin edits are saved automatically to **localStorage** in this browser (auto-save ~400ms after typing, on tab change, exit admin, and when closing the tab). Viewers always see the latest saved data on refresh.
+
+**Note:** Data stays on this device/browser only — not synced to a server. Clearing site data or using another browser will not show your edits.
 
 ## Features
 
