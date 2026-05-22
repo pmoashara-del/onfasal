@@ -1,0 +1,488 @@
+:root {
+  --excel-green: #217346;
+  --excel-green-dark: #185c37;
+  --ribbon-bg: #f3f3f3;
+  --ribbon-border: #d4d4d4;
+  --grid-border: #d0d0d0;
+  --header-bg: #e8f4ea;
+  --header-meta-bg: #f9f9f9;
+  --cell-bg: #ffffff;
+  --cell-selected: #e7f4ff;
+  --cell-focus: #0078d4;
+  --sidebar-bg: #fafafa;
+  --text: #1a1a1a;
+  --muted: #5c5c5c;
+  --critical: #c42b1c;
+  --high: #ca5010;
+  --medium: #986f0b;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--text);
+  background: #e5e5e5;
+  overflow: hidden;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Login overlay */
+.login-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #185c37 0%, #217346 45%, #0d3d24 100%);
+}
+
+.login-card {
+  width: min(400px, 92vw);
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.login-header {
+  padding: 24px 28px 16px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+.login-header h1 {
+  margin: 0 0 6px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--excel-green-dark);
+  line-height: 1.35;
+}
+
+.login-header p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.login-form {
+  padding: 20px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.login-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.login-form input {
+  padding: 9px 11px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.login-form input:focus {
+  outline: 2px solid var(--cell-focus);
+  border-color: var(--cell-focus);
+}
+
+.login-error {
+  color: var(--critical);
+  font-size: 0.8rem;
+  min-height: 1.2em;
+}
+
+.login-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.btn {
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn-primary {
+  background: var(--excel-green);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--excel-green-dark);
+}
+
+.btn-secondary {
+  background: #fff;
+  border-color: #ccc;
+  color: var(--text);
+}
+
+.btn-secondary:hover {
+  background: #f5f5f5;
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--excel-green);
+}
+
+.btn-ghost:hover {
+  background: #e8f4ea;
+}
+
+/* App shell */
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.title-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 14px;
+  background: var(--excel-green);
+  color: #fff;
+  font-size: 0.8rem;
+}
+
+.title-bar-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.title-bar-brand strong {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.title-bar-brand span {
+  opacity: 0.9;
+  font-size: 0.75rem;
+}
+
+.title-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.badge {
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.badge.admin {
+  background: #ffd700;
+  color: #1a1a1a;
+}
+
+.badge.viewer {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.ribbon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: var(--ribbon-bg);
+  border-bottom: 1px solid var(--ribbon-border);
+  flex-wrap: wrap;
+}
+
+.ribbon-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-right: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.ribbon-group:last-child {
+  border-right: none;
+}
+
+.ribbon .btn {
+  padding: 5px 10px;
+  font-size: 0.78rem;
+}
+
+.save-status {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.main-layout {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Department sidebar */
+.dept-sidebar {
+  width: 200px;
+  flex-shrink: 0;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--grid-border);
+  overflow-y: auto;
+}
+
+.dept-sidebar h2 {
+  margin: 0;
+  padding: 10px 12px 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  background: #efefef;
+  border-bottom: 1px solid var(--grid-border);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.dept-list {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+}
+
+.dept-list li button {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: var(--text);
+  border-left: 3px solid transparent;
+}
+
+.dept-list li button:hover {
+  background: #eee;
+}
+
+.dept-list li button.active {
+  background: #e8f4ea;
+  border-left-color: var(--excel-green);
+  font-weight: 600;
+  color: var(--excel-green-dark);
+}
+
+/* Sheet area */
+.sheet-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: #fff;
+}
+
+.sheet-meta {
+  padding: 12px 16px 10px;
+  background: var(--header-meta-bg);
+  border-bottom: 1px solid var(--grid-border);
+}
+
+.sheet-meta h2 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--excel-green-dark);
+}
+
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+  font-size: 0.82rem;
+}
+
+.meta-row span {
+  color: var(--muted);
+}
+
+.meta-row strong {
+  color: var(--text);
+  margin-left: 4px;
+}
+
+.sheet-scroll {
+  flex: 1;
+  overflow: auto;
+}
+
+/* Excel grid */
+.sheet-table-wrap {
+  position: relative;
+  min-width: max-content;
+}
+
+.sheet-table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: max-content;
+  min-width: 100%;
+}
+
+.sheet-table th,
+.sheet-table td {
+  border: 1px solid var(--grid-border);
+  padding: 0;
+  vertical-align: top;
+  height: 28px;
+}
+
+.sheet-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--header-bg);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-align: center;
+  padding: 6px 8px;
+  white-space: nowrap;
+  box-shadow: 0 1px 0 var(--grid-border);
+}
+
+.sheet-table tbody tr:nth-child(even) td {
+  background: #fafafa;
+}
+
+.sheet-table tbody tr:hover td {
+  background: #f0f7f1;
+}
+
+.corner-cell {
+  width: 40px;
+  min-width: 40px;
+  background: #f0f0f0 !important;
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--muted);
+  position: sticky;
+  left: 0;
+  z-index: 6;
+}
+
+.row-num {
+  width: 40px;
+  min-width: 40px;
+  background: #f0f0f0 !important;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--muted);
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  user-select: none;
+}
+
+.cell-input {
+  width: 100%;
+  height: 100%;
+  min-height: 26px;
+  border: none;
+  background: transparent;
+  padding: 5px 8px;
+  font: inherit;
+  font-size: 0.8rem;
+  resize: none;
+  overflow: hidden;
+}
+
+.cell-input:focus {
+  outline: 2px solid var(--cell-focus);
+  outline-offset: -2px;
+  background: var(--cell-selected);
+  z-index: 2;
+  position: relative;
+}
+
+.cell-input:disabled {
+  cursor: default;
+  color: var(--text);
+}
+
+.cell-input.priority-critical {
+  color: var(--critical);
+  font-weight: 600;
+}
+
+.cell-input.priority-high {
+  color: var(--high);
+  font-weight: 600;
+}
+
+.cell-input.priority-medium {
+  color: var(--medium);
+}
+
+.readonly-banner {
+  padding: 6px 16px;
+  background: #fff4ce;
+  border-bottom: 1px solid #f5d78e;
+  font-size: 0.78rem;
+  color: #6a4f00;
+}
+
+.status-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 4px 12px;
+  background: var(--excel-green);
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 0.72rem;
+}
+
+@media (max-width: 768px) {
+  .dept-sidebar {
+    width: 140px;
+  }
+
+  .meta-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
