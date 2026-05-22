@@ -7,7 +7,7 @@ Static web app for post-Fasal implementation tracking (Indore Ashara 1448H).
 | Page | URL | Purpose |
 |------|-----|---------|
 | **Home** | `index.html` | Landing — choose Department or Zone view |
-| **Department wise** | `department.html` | 24 department planning sheets (existing Excel data) |
+| **Department wise** | `department.html` | 27 department planning sheets |
 | **Zone wise** | `zone.html` | Zone implementation checklist (22 items) |
 
 ## Logo

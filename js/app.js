@@ -61,6 +61,15 @@
     }
   }
 
+  function mergeMissingDepartmentsFromSeed() {
+    const ids = new Set(state.departments.map((d) => d.id));
+    DEPARTMENTS.forEach((seed) => {
+      if (!ids.has(seed.id)) {
+        state.departments.push(structuredClone(seed));
+      }
+    });
+  }
+
   async function loadData() {
     const statusEl = document.querySelector("#status-saved");
     if (statusEl) statusEl.textContent = "Loading shared data…";
@@ -68,10 +77,11 @@
     if (cloud?.departments?.length) {
       state.departments = cloud.departments;
       lastSavedAt = cloud.updatedAt;
+      mergeMissingDepartmentsFromSeed();
       try {
         localStorage.setItem(
           STORAGE_KEY,
-          JSON.stringify({ departments: cloud.departments, updatedAt: cloud.updatedAt })
+          JSON.stringify({ departments: state.departments, updatedAt: cloud.updatedAt })
         );
       } catch (_) {
         /* ignore */
@@ -82,6 +92,7 @@
       return;
     }
     loadFromStorage();
+    mergeMissingDepartmentsFromSeed();
     if (statusEl) {
       statusEl.textContent = lastSavedAt
         ? "Loaded (offline cache) · " + formatSavedTime(lastSavedAt)

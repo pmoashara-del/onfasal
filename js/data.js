@@ -380,6 +380,27 @@ const DEPARTMENTS = [
       { task: "Laison with IPMO and setup Office for IPMO", dependency: "COD" },
     ]),
   },
+  {
+    id: "pmo",
+    name: "PMO",
+    chairman: "",
+    pc: "",
+    rows: padRows([]),
+  },
+  {
+    id: "signage",
+    name: "SIGNAGE",
+    chairman: "",
+    pc: "",
+    rows: padRows([]),
+  },
+  {
+    id: "communication",
+    name: "COMMUNICATION",
+    chairman: "",
+    pc: "",
+    rows: padRows([]),
+  },
 ];
 
 const ADMIN_DEFAULT = { username: "admin", password: "ashara1448" };
