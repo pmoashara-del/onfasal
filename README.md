@@ -13,19 +13,24 @@ python3 -m http.server 8080
 
 ## Access
 
+The app opens in **viewer mode** by default (read-only). Admins click **Sign in as admin** in the toolbar.
+
 | Role | How | Permissions |
 |------|-----|-------------|
-| **Admin** | Username: `admin` / Password: `ashara1448` | Edit all cells, add rows, save, reset |
-| **Viewer** | “Continue as viewer” on login | Read-only |
+| **Viewer** | Default on open | View all sheets, export Excel |
+| **Admin** | Toolbar → Sign in as admin (`admin` / `ashara1448`) | Edit cells, add rows, save, reset |
 
-Edits are saved to **localStorage** in the browser (per device).
+Admin edits are saved automatically to **localStorage** in this browser (auto-save ~400ms after typing, on tab change, exit admin, and when closing the tab). Viewers always see the latest saved data on refresh.
+
+**Note:** Data stays on this device/browser only — not synced to a server. Clearing site data or using another browser will not show your edits.
 
 ## Features
 
 - Excel-like grid with department tabs (24 departments)
 - Sticky headers, row numbers, priority highlighting
-- Export current sheet to CSV
-- Reset current department or all data to seed values
+- **Export Excel (this sheet)** — current department as `.xlsx`
+- **Export Excel (all sheets)** — one workbook with every department on its own tab
+- Reset options (admin only)
 
 ## Structure
 

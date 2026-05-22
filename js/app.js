@@ -20,6 +20,10 @@
   const readonlyBanner = $("#readonly-banner");
   const statusDept = $("#status-dept");
   const statusMode = $("#status-mode");
+  const logoutBtn = $("#logout-btn");
+  const adminLoginBtn = $("#admin-login-btn");
+  let saveTimer = null;
+  let lastSavedAt = null;
 
   function loadFromStorage() {
     try {
@@ -28,29 +32,63 @@
       const saved = JSON.parse(raw);
       if (saved?.departments?.length) {
         state.departments = saved.departments;
+        lastSavedAt = saved.updatedAt || null;
       }
     } catch (_) {
       /* ignore corrupt storage */
     }
   }
 
-  function saveToStorage() {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({ departments: state.departments, updatedAt: Date.now() })
-    );
-    state.dirty = false;
-    saveStatus.textContent = "Saved " + new Date().toLocaleTimeString();
+  /** Copy focused cell value into memory before re-render or save. */
+  function syncActiveCellToState() {
+    const el = document.activeElement;
+    if (!el?.classList?.contains("cell-input") || el.disabled) return;
+    const dept = getActiveDept();
+    const row = Number(el.dataset.row);
+    const col = el.dataset.col;
+    if (!Number.isNaN(row) && col && dept.rows[row]) {
+      dept.rows[row][col] = el.value;
+    }
   }
 
-  function checkAuth() {
-    const auth = sessionStorage.getItem(AUTH_KEY);
-    if (auth === "admin") {
-      state.isAdmin = true;
-      showApp();
-      return true;
+  function formatSavedTime(ts) {
+    if (!ts) return "";
+    return new Date(ts).toLocaleString();
+  }
+
+  function saveToStorage() {
+    if (!state.isAdmin) return false;
+    syncActiveCellToState();
+    const payload = { departments: state.departments, updatedAt: Date.now() };
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    } catch (_) {
+      saveStatus.textContent = "Save failed — browser storage may be full";
+      return false;
     }
-    return false;
+    state.dirty = false;
+    lastSavedAt = payload.updatedAt;
+    saveStatus.textContent = "All changes saved · " + formatSavedTime(lastSavedAt);
+    return true;
+  }
+
+  function flushSave() {
+    if (!state.isAdmin) return;
+    clearTimeout(saveTimer);
+    saveTimer = null;
+    syncActiveCellToState();
+    if (state.dirty) saveToStorage();
+  }
+
+  function scheduleAutoSave() {
+    if (!state.isAdmin) return;
+    clearTimeout(saveTimer);
+    saveStatus.textContent = "Saving…";
+    saveTimer = setTimeout(() => {
+      saveTimer = null;
+      syncActiveCellToState();
+      if (state.dirty) saveToStorage();
+    }, 400);
   }
 
   function setAuth(role) {
@@ -62,27 +100,51 @@
       state.isAdmin = false;
     }
     updateRoleUI();
+    renderSheet();
+  }
+
+  function showLogin() {
+    loginForm.reset();
+    loginError.textContent = "";
+    loginOverlay.classList.remove("hidden");
+  }
+
+  function hideLogin() {
+    loginOverlay.classList.add("hidden");
   }
 
   function showApp() {
-    loginOverlay.classList.add("hidden");
-    app.classList.remove("hidden");
+    hideLogin();
     updateRoleUI();
     renderSidebar();
     renderSheet();
   }
 
   function updateRoleUI() {
+    document.querySelectorAll(".admin-only").forEach((el) => {
+      el.classList.toggle("hidden", !state.isAdmin);
+    });
+
     if (state.isAdmin) {
       roleBadge.textContent = "Admin — can edit";
       roleBadge.className = "badge admin";
       readonlyBanner.classList.add("hidden");
       statusMode.textContent = "Edit mode";
+      logoutBtn.classList.remove("hidden");
+      adminLoginBtn.classList.add("hidden");
+      saveStatus.textContent = state.dirty
+        ? "Unsaved changes…"
+        : lastSavedAt
+          ? "All changes saved · " + formatSavedTime(lastSavedAt)
+          : "Edits save automatically to this browser";
     } else {
       roleBadge.textContent = "View only";
       roleBadge.className = "badge viewer";
       readonlyBanner.classList.remove("hidden");
       statusMode.textContent = "Read-only";
+      logoutBtn.classList.add("hidden");
+      adminLoginBtn.classList.remove("hidden");
+      saveStatus.textContent = "";
     }
   }
 
@@ -98,6 +160,59 @@
     return "";
   }
 
+  function sanitizeSheetName(name) {
+    return String(name).replace(/[\\/*?:\[\]]/g, "").slice(0, 31) || "Sheet";
+  }
+
+  function deptToAoA(dept) {
+    const aoa = [
+      [PLANNING_META.title + " — " + PLANNING_META.location],
+      [PLANNING_META.sheetTitle],
+      [],
+      ["DEPARTMENT:", dept.name, "", "CHAIRMAN:", dept.chairman || "", "", "PC:", dept.pc || ""],
+      [],
+      COLUMNS.map((c) => c.label),
+    ];
+    dept.rows.forEach((row) => {
+      aoa.push(COLUMNS.map((c) => row[c.key] ?? ""));
+    });
+    return aoa;
+  }
+
+  function exportExcelSheet() {
+    if (typeof XLSX === "undefined") {
+      alert("Excel library failed to load. Check your internet connection and refresh.");
+      return;
+    }
+    const dept = getActiveDept();
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(deptToAoA(dept));
+    XLSX.utils.book_append_sheet(wb, ws, sanitizeSheetName(dept.name));
+    XLSX.writeFile(wb, `${sanitizeSheetName(dept.name)}-48hr-planning.xlsx`);
+  }
+
+  function exportExcelAll() {
+    if (typeof XLSX === "undefined") {
+      alert("Excel library failed to load. Check your internet connection and refresh.");
+      return;
+    }
+    const wb = XLSX.utils.book_new();
+    const used = new Set();
+    state.departments.forEach((dept) => {
+      let name = sanitizeSheetName(dept.name);
+      let base = name;
+      let n = 2;
+      while (used.has(name)) {
+        const suffix = String(n++);
+        name = base.slice(0, 31 - suffix.length) + suffix;
+      }
+      used.add(name);
+      const ws = XLSX.utils.aoa_to_sheet(deptToAoA(dept));
+      XLSX.utils.book_append_sheet(wb, ws, name);
+    });
+    XLSX.writeFile(wb, "Fasal-48hr-planning-all-departments.xlsx");
+  }
+
   function renderSidebar() {
     deptList.innerHTML = state.departments
       .map(
@@ -108,6 +223,8 @@
 
     deptList.querySelectorAll("button").forEach((btn) => {
       btn.addEventListener("click", () => {
+        if (btn.dataset.id === state.activeDeptId) return;
+        flushSave();
         state.activeDeptId = btn.dataset.id;
         renderSidebar();
         renderSheet();
@@ -183,38 +300,18 @@
       el.className = "cell-input " + priorityClass(el.value);
     }
     state.dirty = true;
-    saveStatus.textContent = "Unsaved changes…";
+    scheduleAutoSave();
   }
 
   function onCellBlur() {
-    if (state.dirty && state.isAdmin) {
-      saveToStorage();
-    }
+    clearTimeout(saveTimer);
+    saveTimer = null;
+    flushSave();
   }
 
   function autoResize(ta) {
     ta.style.height = "auto";
     ta.style.height = Math.max(26, ta.scrollHeight) + "px";
-  }
-
-  function exportCsv() {
-    const dept = getActiveDept();
-    const headers = COLUMNS.map((c) => c.label);
-    const lines = [headers.join(",")];
-    dept.rows.forEach((row) => {
-      lines.push(
-        COLUMNS.map((c) => {
-          const v = String(row[c.key] ?? "").replace(/"/g, '""');
-          return `"${v}"`;
-        }).join(",")
-      );
-    });
-    const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `${dept.name}-48hr-planning.csv`;
-    a.click();
-    URL.revokeObjectURL(a.href);
   }
 
   function resetDepartment() {
@@ -255,49 +352,48 @@
     const pass = $("#password").value;
     if (user === ADMIN_DEFAULT.username && pass === ADMIN_DEFAULT.password) {
       setAuth("admin");
-      showApp();
+      hideLogin();
+      updateRoleUI();
+      renderSheet();
     } else {
       loginError.textContent = "Invalid username or password.";
     }
   });
 
-  $("#viewer-btn").addEventListener("click", () => {
+  $("#cancel-login-btn").addEventListener("click", hideLogin);
+
+  logoutBtn.addEventListener("click", () => {
+    flushSave();
     setAuth("viewer");
-    showApp();
+    hideLogin();
   });
 
-  $("#logout-btn").addEventListener("click", () => {
-    setAuth("viewer");
-    sessionStorage.removeItem(AUTH_KEY);
-    state.isAdmin = false;
-    app.classList.add("hidden");
-    loginOverlay.classList.remove("hidden");
-    loginForm.reset();
-    loginError.textContent = "";
-  });
-
-  $("#admin-login-btn").addEventListener("click", () => {
-    app.classList.add("hidden");
-    loginOverlay.classList.remove("hidden");
-  });
+  adminLoginBtn.addEventListener("click", showLogin);
 
   $("#save-btn").addEventListener("click", () => {
-    if (state.isAdmin) saveToStorage();
+    if (state.isAdmin) {
+      clearTimeout(saveTimer);
+      saveTimer = null;
+      state.dirty = true;
+      flushSave();
+    }
   });
 
-  $("#export-btn").addEventListener("click", exportCsv);
+  $("#export-sheet-btn").addEventListener("click", exportExcelSheet);
+  $("#export-all-btn").addEventListener("click", exportExcelAll);
   $("#add-row-btn").addEventListener("click", addRow);
   $("#reset-dept-btn").addEventListener("click", resetDepartment);
   $("#reset-all-btn").addEventListener("click", resetAll);
 
   loadFromStorage();
-  if (checkAuth()) {
-    /* already logged in */
+  if (sessionStorage.getItem(AUTH_KEY) === "admin") {
+    state.isAdmin = true;
   }
+  showApp();
 
-  window.addEventListener("beforeunload", (e) => {
-    if (state.dirty && state.isAdmin) {
-      saveToStorage();
-    }
+  window.addEventListener("beforeunload", flushSave);
+  window.addEventListener("pagehide", flushSave);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") flushSave();
   });
 })();
