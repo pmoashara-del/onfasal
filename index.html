@@ -63,7 +63,7 @@
       </div>
 
       <p id="readonly-banner" class="readonly-banner">
-        View-only mode. Click <strong>Sign in as admin</strong> in the toolbar to edit cells.
+        View-only mode. Click <strong>Sign in as admin</strong> to edit. Admins: click column headers to select a column; use arrow keys to move between cells.
       </p>
 
       <div class="main-layout">
@@ -74,9 +74,9 @@
 
         <section class="sheet-panel">
           <div id="sheet-meta" class="sheet-meta"></div>
-          <div class="sheet-scroll">
+          <div id="sheet-scroll" class="sheet-scroll" tabindex="0">
             <div class="sheet-table-wrap">
-              <table class="sheet-table" aria-label="Planning spreadsheet">
+              <table id="sheet-table" class="sheet-table" aria-label="Planning spreadsheet">
                 <thead id="sheet-head"></thead>
                 <tbody id="sheet-body"></tbody>
               </table>
@@ -88,6 +88,7 @@
       <footer class="status-bar">
         <span>Sheet: <strong id="status-dept">—</strong></span>
         <span id="status-mode">Read-only</span>
+        <span id="status-cell">Ready</span>
         <span id="status-saved">Data saved in this browser</span>
       </footer>
     </div>
