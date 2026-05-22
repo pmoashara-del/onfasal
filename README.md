@@ -12,7 +12,7 @@ Static web app for post-Fasal implementation tracking (Indore Ashara 1448H).
 
 ## Logo
 
-Place your official logo at `assets/ashara-logo.png` (used on the home page). If missing, the included `assets/ashara-logo.svg` is shown automatically.
+Home page uses `assets/ashara-logo.png` (official Ashara Araz artwork).
 
 ## Quick start
 
@@ -25,9 +25,9 @@ python3 -m http.server 8080
 
 Opens in **viewer mode** by default. Admins use **Sign in as admin** (`admin` / `ashara1448`).
 
-Data is saved separately per view in browser localStorage:
-- Departments: `fasal-planning-v1`
-- Zone checklist: `fasal-zone-checklist-v1`
+**Department data** is saved to **Supabase cloud** so all users see the same admin edits (free hosted database — no server to run). A local cache is kept as backup.
+
+Zone checklist is a fixed read-only list (no cloud edits).
 
 ## Features
 

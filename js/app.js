@@ -61,6 +61,48 @@
     }
   }
 
+  async function loadData() {
+    const statusEl = document.querySelector("#status-saved");
+    if (statusEl) statusEl.textContent = "Loading shared data…";
+    const cloud = await FasalCloud.loadDepartments();
+    if (cloud?.departments?.length) {
+      state.departments = cloud.departments;
+      lastSavedAt = cloud.updatedAt;
+      try {
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({ departments: cloud.departments, updatedAt: cloud.updatedAt })
+        );
+      } catch (_) {
+        /* ignore */
+      }
+      if (statusEl) {
+        statusEl.textContent = "Shared data loaded · " + formatSavedTime(lastSavedAt);
+      }
+      return;
+    }
+    loadFromStorage();
+    if (statusEl) {
+      statusEl.textContent = lastSavedAt
+        ? "Loaded (offline cache) · " + formatSavedTime(lastSavedAt)
+        : "Using default seed data — sign in as admin to save to cloud";
+    }
+  }
+
+  async function refreshFromCloud() {
+    if (state.dirty || state.isAdmin) return;
+    const cloud = await FasalCloud.loadDepartments();
+    if (!cloud?.departments?.length) return;
+    if (!lastSavedAt || cloud.updatedAt >= lastSavedAt) {
+      state.departments = cloud.departments;
+      lastSavedAt = cloud.updatedAt;
+      renderSidebar();
+      renderSheet();
+      const statusEl = document.querySelector("#status-saved");
+      if (statusEl) statusEl.textContent = "Updated · " + formatSavedTime(lastSavedAt);
+    }
+  }
+
   function syncActiveCellToState() {
     const el = document.activeElement;
     if (!el) return;
@@ -89,21 +131,37 @@
     return new Date(ts).toLocaleString();
   }
 
-  function saveToStorage() {
+  async function saveToStorage() {
     if (!state.isAdmin) return false;
     syncActiveCellToState();
     syncAllMetaFromDom();
-    const payload = { departments: state.departments, updatedAt: Date.now() };
+    const updatedAt = Date.now();
+    const payload = { departments: state.departments, updatedAt };
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
     } catch (_) {
-      saveStatus.textContent = "Save failed — browser storage may be full";
+      saveStatus.textContent = "Local save failed";
       return false;
     }
+
+    saveStatus.textContent = "Saving to cloud…";
+    const result = await FasalCloud.saveDepartments(
+      state.departments,
+      ADMIN_DEFAULT.password
+    );
+
     state.dirty = false;
-    lastSavedAt = payload.updatedAt;
-    saveStatus.textContent = "All changes saved · " + formatSavedTime(lastSavedAt);
-    return true;
+    lastSavedAt = updatedAt;
+
+    if (result.ok) {
+      saveStatus.textContent = "Saved for everyone · " + formatSavedTime(lastSavedAt);
+      const statusEl = document.querySelector("#status-saved");
+      if (statusEl) statusEl.textContent = "Shared with all users · " + formatSavedTime(lastSavedAt);
+      return true;
+    }
+
+    saveStatus.textContent = "Cloud save failed: " + (result.error || "unknown") + " (cached locally)";
+    return false;
   }
 
   function flushSave() {
@@ -112,7 +170,7 @@
     saveTimer = null;
     syncActiveCellToState();
     syncAllMetaFromDom();
-    if (state.dirty) saveToStorage();
+    if (state.dirty) void saveToStorage();
   }
 
   function scheduleAutoSave() {
@@ -123,7 +181,7 @@
       saveTimer = null;
       syncActiveCellToState();
       syncAllMetaFromDom();
-      if (state.dirty) saveToStorage();
+      if (state.dirty) void saveToStorage();
     }, 400);
   }
 
@@ -179,7 +237,7 @@
         ? "Unsaved changes…"
         : lastSavedAt
           ? "All changes saved · " + formatSavedTime(lastSavedAt)
-          : "Edits save automatically to this browser";
+          : "Edits save to cloud for all users";
     } else {
       roleBadge.textContent = "View only";
       roleBadge.className = "badge viewer";
@@ -777,15 +835,22 @@
   document.querySelector("#reset-dept-btn").addEventListener("click", resetDepartment);
   document.querySelector("#reset-all-btn").addEventListener("click", resetAll);
 
-  loadFromStorage();
-  if (sessionStorage.getItem(AUTH_KEY) === "admin") {
-    state.isAdmin = true;
-  }
-  showApp();
+  (async function init() {
+    await loadData();
+    if (sessionStorage.getItem(AUTH_KEY) === "admin") {
+      state.isAdmin = true;
+    }
+    showApp();
+  })();
 
   window.addEventListener("beforeunload", flushSave);
   window.addEventListener("pagehide", flushSave);
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "hidden") flushSave();
+    if (document.visibilityState === "visible") void refreshFromCloud();
   });
+
+  setInterval(() => {
+    if (!state.isAdmin && !state.dirty) void refreshFromCloud();
+  }, 45000);
 })();
