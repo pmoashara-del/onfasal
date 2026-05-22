@@ -3,15 +3,6 @@ const ZONE_META = {
   subtitle: "Post Fasal 48 Hour Implementation Checklist — Zone Wise",
 };
 
-const ZONE_COLUMNS = [
-  { key: "sno", label: "S.No.", width: 48 },
-  { key: "task", label: "CHECKLIST ITEM", width: 480 },
-  { key: "zone", label: "ZONE", width: 120 },
-  { key: "assignedTo", label: "ASSIGNED TO / OWNER", width: 200 },
-  { key: "status", label: "STATUS", width: 110 },
-  { key: "remarks", label: "REMARKS", width: 200 },
-];
-
 const ZONE_STORAGE_KEY = "fasal-zone-checklist-v1";
 
 const ZONE_CHECKLIST_ITEMS = [
@@ -40,14 +31,7 @@ const ZONE_CHECKLIST_ITEMS = [
 ];
 
 function buildZoneRows() {
-  return ZONE_CHECKLIST_ITEMS.map((task, i) => ({
-    sno: i + 1,
-    task,
-    zone: "ALL ZONES",
-    assignedTo: "",
-    status: "",
-    remarks: "",
-  }));
+  return ZONE_CHECKLIST_ITEMS.map((task, i) => ({ sno: i + 1, task }));
 }
 
 const ZONE_SEED_ROWS = buildZoneRows();
