@@ -1,42 +1,32 @@
-# 0–48 Hour Planning — Fasal Indore Ashara 1448H
+# Ashara Mubaraka 1448H — Post Fasal 48 Hour Checklist
 
-A static, Excel-style web workbook for department planning after Fasal. No server required.
+Static web app for post-Fasal implementation tracking (Indore Ashara 1448H).
+
+## Pages
+
+| Page | URL | Purpose |
+|------|-----|---------|
+| **Home** | `index.html` | Landing — choose Department or Zone view |
+| **Department wise** | `department.html` | 24 department planning sheets (existing Excel data) |
+| **Zone wise** | `zone.html` | Zone implementation checklist (22 items) |
 
 ## Quick start
 
-Open `index.html` in a browser, or serve locally:
-
 ```bash
 python3 -m http.server 8080
-# Visit http://localhost:8080
+# Open http://localhost:8080
 ```
 
 ## Access
 
-The app opens in **viewer mode** by default (read-only). Admins click **Sign in as admin** in the toolbar.
+Opens in **viewer mode** by default. Admins use **Sign in as admin** (`admin` / `ashara1448`).
 
-| Role | How | Permissions |
-|------|-----|-------------|
-| **Viewer** | Default on open | View all sheets, export Excel |
-| **Admin** | Toolbar → Sign in as admin (`admin` / `ashara1448`) | Edit cells, add rows, save, reset |
-
-Admin edits are saved automatically to **localStorage** in this browser (auto-save ~400ms after typing, on tab change, exit admin, and when closing the tab). Viewers always see the latest saved data on refresh.
-
-**Note:** Data stays on this device/browser only — not synced to a server. Clearing site data or using another browser will not show your edits.
+Data is saved separately per view in browser localStorage:
+- Departments: `fasal-planning-v1`
+- Zone checklist: `fasal-zone-checklist-v1`
 
 ## Features
 
-- Excel-like grid with department tabs (24 departments)
-- Sticky headers, row numbers, priority highlighting
-- **Export Excel (this sheet)** — current department as `.xlsx`
-- **Export Excel (all sheets)** — one workbook with every department on its own tab
-- Reset options (admin only)
-
-## Structure
-
-```
-index.html      # App shell
-css/styles.css  # Excel-inspired UI
-js/data.js      # Seed planning data
-js/app.js       # Auth, rendering, persistence
-```
+- Excel-like grids with arrow keys, column selection, auto-save
+- Department view: chairman/PC editable, export one or all sheets
+- Zone view: full implementation checklist with zone, owner, status, remarks
