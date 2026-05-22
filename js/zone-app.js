@@ -1,20 +1,7 @@
 (function () {
-  function loadTasks() {
-    try {
-      const raw = localStorage.getItem(ZONE_STORAGE_KEY);
-      if (!raw) return ZONE_CHECKLIST_ITEMS.slice();
-      const saved = JSON.parse(raw);
-      if (saved?.items?.length) return saved.items;
-      if (saved?.rows?.length) return saved.rows.map((r) => r.task || r);
-    } catch (_) {
-      /* ignore */
-    }
-    return ZONE_CHECKLIST_ITEMS.slice();
-  }
-
   function render() {
     const list = document.querySelector("#zone-list");
-    const tasks = loadTasks();
+    const tasks = ZONE_CHECKLIST_ITEMS.slice();
 
     list.innerHTML = tasks
       .map(
