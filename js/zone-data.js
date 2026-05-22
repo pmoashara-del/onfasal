@@ -3,7 +3,7 @@ const ZONE_META = {
   subtitle: "Post Fasal 48 Hour Implementation Checklist — Zone Wise",
 };
 
-const ZONE_STORAGE_KEY = "fasal-zone-checklist-v1";
+const ZONE_STORAGE_KEY = "fasal-zone-checklist-v2";
 
 const ZONE_CHECKLIST_ITEMS = [
   "All Masjid accessories not required during Ashara Mubaraka — including jhumar, carpets, decorative items, furniture, plantations, and window doors — must be removed and stored immediately.",
